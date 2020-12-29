@@ -1,6 +1,7 @@
 package com.rinftech.marketee.presentation
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -44,9 +45,12 @@ class ChooseTargetingSpecificsFragment : Fragment(), KoinComponent {
     }
 
     private fun setupAdapter() {
-        val specificsAdapter = RecyclerAdapter(viewModel.specificsList)
+        val specificsAdapter = RecyclerAdapter(
+            viewModel.specificsList,
+            viewModel.specificsListForFilteringOffersLiveData
+        )
         specificsAdapter.onItemClick = { specific ->
-            viewModel.addSpecificAndFilterOffers(specific)
+            viewModel.toggleSpecificAndFilterOffers(specific)
         }
         specificsRecyclerView.layoutManager = LinearLayoutManager(context)
         specificsRecyclerView.adapter = specificsAdapter
@@ -55,6 +59,7 @@ class ChooseTargetingSpecificsFragment : Fragment(), KoinComponent {
 
     class RecyclerAdapter(
         specificsList: LiveData<List<Specific>>,
+        private val specificsListForFilteringOffers: LiveData<MutableList<Specific>>,
         private var dataSet: ArrayList<Specific> = arrayListOf()
     ) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
@@ -66,7 +71,25 @@ class ChooseTargetingSpecificsFragment : Fragment(), KoinComponent {
                 dataSet = it as ArrayList<Specific>
                 notifyDataSetChanged()
             }
+            specificsListForFilteringOffers.observeForever {
+                notifyDataSetChanged()
+            }
         }
+
+        override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+            val view = LayoutInflater.from(viewGroup.context)
+                .inflate(R.layout.targeting_specific_item, viewGroup, false)
+            return ViewHolder(view)
+        }
+
+        override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+            viewHolder.textView.text = dataSet[position].specificName
+            if (specificsListForFilteringOffers.value?.contains(dataSet[position]) == true){
+                viewHolder.textView.setBackgroundColor(Color.parseColor("#567845"))
+            }
+        }
+
+        override fun getItemCount() = dataSet.size
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             var textView: TextView = view.targetingSpecificItemTv
@@ -77,24 +100,5 @@ class ChooseTargetingSpecificsFragment : Fragment(), KoinComponent {
                 }
             }
         }
-
-        override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.targeting_specific_item, viewGroup, false)
-
-            view.setOnClickListener {
-
-
-            }
-
-            return ViewHolder(view)
-        }
-
-        override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-            viewHolder.textView.text = dataSet[position].specificName
-        }
-
-        override fun getItemCount() = dataSet.size
-
     }
 }

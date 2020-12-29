@@ -2,7 +2,6 @@ package com.rinftech.marketee.presentation
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rinftech.marketee.data.Repository
@@ -49,6 +48,8 @@ class MainActivityViewModel(
         MutableLiveData<List<MarketingOffer>>().also { allMarketingOfferList }
     }
 
+    val specificsListForFilteringOffersLiveData: MutableLiveData<MutableList<Specific>> =
+        MutableLiveData()
     private val specificsListForFilteringOffers = ArrayList<Specific>()
 
     init {
@@ -74,8 +75,14 @@ class MainActivityViewModel(
             repository.loadMarketingOffersList()
         }
 
-    fun addSpecificAndFilterOffers(specific: Specific) {
-        specificsListForFilteringOffers.add(specific)
+    fun toggleSpecificAndFilterOffers(specific: Specific) {
+        if (specificsListForFilteringOffers.contains(specific)) {
+            specificsListForFilteringOffers.remove(specific)
+        } else {
+            specificsListForFilteringOffers.add(specific)
+        }
+        //update the corresponding live data to notify activity
+        specificsListForFilteringOffersLiveData.value = specificsListForFilteringOffers
         filterMarketingOffersByCommonChannels(getCommonChannels())
     }
 
@@ -93,7 +100,7 @@ class MainActivityViewModel(
     }
 
     private fun getCommonChannels(): List<String> {
-        //should not normally happen
+        //normally should not happen
         if (specificsListForFilteringOffers.isNullOrEmpty()) {
             Log.e(TAG, "ERROR - specificsListForFilteringOffers is empty!")
             return ArrayList()
@@ -113,6 +120,7 @@ class MainActivityViewModel(
 
     fun resetFilters() {
         specificsListForFilteringOffers.clear()
+        specificsListForFilteringOffersLiveData.value = specificsListForFilteringOffers
         filteredMarketingOfferListLiveData.value = ArrayList()
     }
 
