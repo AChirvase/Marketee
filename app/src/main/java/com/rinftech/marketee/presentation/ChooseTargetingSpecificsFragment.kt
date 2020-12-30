@@ -58,20 +58,23 @@ class ChooseTargetingSpecificsFragment : Fragment(), KoinComponent {
     }
 
     class RecyclerAdapter(
-        specificsList: LiveData<List<Specific>>,
-        private val specificsListForFilteringOffers: LiveData<MutableList<Specific>>,
-        private var dataSet: ArrayList<Specific> = arrayListOf()
+        specificsListLiveData: LiveData<List<Specific>>,
+        specificsListForFilteringOffersLiveData: LiveData<MutableList<Specific>>
     ) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
+
+        private var specificsListForFilteringOffers = ArrayList<Specific>()
+        private var specificsList = ArrayList<Specific>()
 
         //this is a callback
         var onItemClick: ((Specific) -> Unit)? = null
 
         init {
-            specificsList.observeForever {
-                dataSet = it as ArrayList<Specific>
+            specificsListLiveData.observeForever {
+                specificsList = it as ArrayList<Specific>
                 notifyDataSetChanged()
             }
-            specificsListForFilteringOffers.observeForever {
+            specificsListForFilteringOffersLiveData.observeForever {
+                specificsListForFilteringOffers = it as ArrayList<Specific>
                 notifyDataSetChanged()
             }
         }
@@ -83,20 +86,22 @@ class ChooseTargetingSpecificsFragment : Fragment(), KoinComponent {
         }
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-            viewHolder.textView.text = dataSet[position].specificName
-            if (specificsListForFilteringOffers.value?.contains(dataSet[position]) == true){
+            viewHolder.textView.text = specificsList[position].specificName
+            if (specificsListForFilteringOffers.contains(specificsList[position])) {
                 viewHolder.textView.setBackgroundColor(Color.parseColor("#567845"))
+            } else{
+                viewHolder.textView.setBackgroundColor(Color.parseColor("#992031"))
             }
         }
 
-        override fun getItemCount() = dataSet.size
+        override fun getItemCount() = specificsList.size
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             var textView: TextView = view.targetingSpecificItemTv
 
             init {
                 view.setOnClickListener {
-                    onItemClick?.invoke(dataSet[adapterPosition])
+                    onItemClick?.invoke(specificsList[adapterPosition])
                 }
             }
         }
