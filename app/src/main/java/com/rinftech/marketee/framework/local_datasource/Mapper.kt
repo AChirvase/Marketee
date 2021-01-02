@@ -2,7 +2,7 @@ package com.rinftech.marketee.framework.local_datasource
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.rinftech.marketee.domain.MarketingOffer
+import com.rinftech.marketee.domain.MarketingCampaign
 import com.rinftech.marketee.domain.Specific
 
 class Mapper {
@@ -23,12 +23,12 @@ class Mapper {
             specificEntityList.map { Specific(it.specificName, it.channels) }
 
 
-        fun toDomainLiveDataMarketingOffersList(marketingOffersList: LiveData<List<MarketingOfferEntity>>): LiveData<List<MarketingOffer>> {
-            return Transformations.map(marketingOffersList) {
+        fun toDomainLiveDataMarketingCampaignsList(marketingCampaignsList: LiveData<List<MarketingCampaignEntity>>): LiveData<List<MarketingCampaign>> {
+            return Transformations.map(marketingCampaignsList) {
                 it.map { entity ->
-                    MarketingOffer(
+                    MarketingCampaign(
                         entity.channelName,
-                        entity.offerName,
+                        entity.campaignName,
                         entity.price,
                         entity.features
                     )

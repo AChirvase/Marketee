@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 import com.rinftech.marketee.utils.StringListToGsonConverter
 
 @Database(
-    entities = [SpecificEntity::class, MarketingOfferEntity::class],
+    entities = [SpecificEntity::class, MarketingCampaignEntity::class],
     version = 1,
     exportSchema = false
 )

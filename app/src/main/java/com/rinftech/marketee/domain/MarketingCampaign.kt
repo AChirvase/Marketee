@@ -1,8 +1,8 @@
 package com.rinftech.marketee.domain
 
-class MarketingOffer(
+class MarketingCampaign(
     var channelName: String,
-    var offerName: String,
+    var campaignName: String,
     var price: String,
     var features: ArrayList<String>
 )

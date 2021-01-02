@@ -5,15 +5,17 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rinftech.marketee.data.Repository
-import com.rinftech.marketee.domain.MarketingOffer
+import com.rinftech.marketee.domain.MarketingCampaign
 import com.rinftech.marketee.domain.Specific
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 
 sealed class MainActivityViewState {
-    object ChooseTargetingSpecifics : MainActivityViewState()
-    object ChooseMarketingSpecifics : MainActivityViewState()
+    object SelectTargetingSpecifics : MainActivityViewState()
+    object SelectChannel : MainActivityViewState()
+    object SelectMarketingCampaign : MainActivityViewState()
+    object ReviewSelectedMarketingCampaign : MainActivityViewState()
 }
 
 class MainActivityViewModel(
@@ -27,42 +29,41 @@ class MainActivityViewModel(
 
     val viewState: MutableLiveData<MainActivityViewState> by lazy {
         MutableLiveData<MainActivityViewState>().also {
-            it.value = MainActivityViewState.ChooseTargetingSpecifics
+            it.value = MainActivityViewState.SelectTargetingSpecifics
         }
     }
 
-    val specificsList: MutableLiveData<List<Specific>> by lazy {
+    val specificsListLiveData: MutableLiveData<List<Specific>> by lazy {
         MutableLiveData<List<Specific>>().also {
             loadSpecificsList()
         }
     }
 
-
-    val allMarketingOfferList: MutableLiveData<List<MarketingOffer>> by lazy {
-        MutableLiveData<List<MarketingOffer>>().also {
-            loadMarketingOffersList()
+    val allMarketingCampaignList: MutableLiveData<List<MarketingCampaign>> by lazy {
+        MutableLiveData<List<MarketingCampaign>>().also {
+            loadMarketingCampaignsList()
         }
     }
 
-    val filteredMarketingOfferListLiveData: MutableLiveData<List<MarketingOffer>> by lazy {
-        MutableLiveData<List<MarketingOffer>>().also { allMarketingOfferList }
+    val channelListLiveData: MutableLiveData<List<String>> by lazy {
+        MutableLiveData<List<String>>()
     }
 
-    val specificsListForFilteringOffersLiveData: MutableLiveData<MutableList<Specific>> =
+    val filteredMarketingCampaignListLiveData: MutableLiveData<List<MarketingCampaign>> by lazy {
+        MutableLiveData<List<MarketingCampaign>>().also { allMarketingCampaignList }
+    }
+    val specificsListForFilteringCampaignsLiveData: MutableLiveData<MutableList<Specific>> =
         MutableLiveData()
-    private val specificsListForFilteringOffers = ArrayList<Specific>()
+    private val specificsListForFilteringCampaigns = ArrayList<Specific>()
+    private lateinit var selectedMarketingCampaign: MarketingCampaign
 
     init {
         repository.getSpecificsListLiveData().observeForever {
-            specificsList.value = it
+            specificsListLiveData.value = it
         }
-        repository.getMarketingOffersListLiveData().observeForever {
-            allMarketingOfferList.value = it
+        repository.getMarketingCampaignListLiveData().observeForever {
+            allMarketingCampaignList.value = it
         }
-    }
-
-    fun listenForViewStateChange() {
-
     }
 
     private fun loadSpecificsList() =
@@ -70,58 +71,72 @@ class MainActivityViewModel(
             repository.loadSpecificsList()
         }
 
-    private fun loadMarketingOffersList() =
+    private fun loadMarketingCampaignsList() =
         GlobalScope.launch {
-            repository.loadMarketingOffersList()
+            repository.loadMarketingCampaignsList()
         }
 
-    fun toggleSpecificAndFilterOffers(specific: Specific) {
-        if (specificsListForFilteringOffers.contains(specific)) {
-            specificsListForFilteringOffers.remove(specific)
+    fun toggleSpecificAndFilterCampaigns(specific: Specific) {
+        if (specificsListForFilteringCampaigns.contains(specific)) {
+            specificsListForFilteringCampaigns.remove(specific)
         } else {
-            specificsListForFilteringOffers.add(specific)
+            specificsListForFilteringCampaigns.add(specific)
         }
         //update the corresponding live data to notify activity
-        specificsListForFilteringOffersLiveData.value = specificsListForFilteringOffers
-        filterMarketingOffersByCommonChannels(getCommonChannels())
+        specificsListForFilteringCampaignsLiveData.value = specificsListForFilteringCampaigns
+        filterMarketingCampaignsByCommonChannelList(getCommonChannels())
     }
 
-    private fun filterMarketingOffersByCommonChannels(commonChannels: List<String>) {
-        val filteredMarketingOfferList = ArrayList<MarketingOffer>()
+    fun goToSelectMarketingCampaign(channelName: String) {
+        viewState.value = MainActivityViewState.SelectMarketingCampaign
+        filterMarketingCampaignsByCommonChannel(channelName)
+    }
 
-        //add each marketing offer that belongs to a common channel
-        allMarketingOfferList.value?.forEach { marketingOffer ->
-            if (commonChannels.contains(marketingOffer.channelName)) {
-                filteredMarketingOfferList.add(marketingOffer)
-            }
-        }
-        //update the live data
-        filteredMarketingOfferListLiveData.value = filteredMarketingOfferList
+    private fun filterMarketingCampaignsByCommonChannelList(commonChannels: List<String>) {
+        filteredMarketingCampaignListLiveData.value =
+            allMarketingCampaignList.value?.filter { commonChannels.contains(it.channelName) }
+    }
+
+    private fun filterMarketingCampaignsByCommonChannel(channelName: String) {
+        filteredMarketingCampaignListLiveData.value =
+            allMarketingCampaignList.value?.filter { channelName == it.channelName }
     }
 
     private fun getCommonChannels(): List<String> {
         //normally should not happen
-        if (specificsListForFilteringOffers.isNullOrEmpty()) {
-            Log.e(TAG, "ERROR - specificsListForFilteringOffers is empty!")
+        if (specificsListForFilteringCampaigns.isNullOrEmpty()) {
+            Log.e(TAG, "ERROR - specificsListForFilteringCampaigns is empty!")
             return ArrayList()
         }
 
         var intersectionOfChannels = HashSet<String>()
         //initialize with first item
-        intersectionOfChannels.addAll(specificsListForFilteringOffers[0].channelsNamesList)
+        intersectionOfChannels.addAll(specificsListForFilteringCampaigns[0].channelsNamesList)
         //intersect with all the other specifics channels
-        specificsListForFilteringOffers.forEach {
+        specificsListForFilteringCampaigns.forEach {
             intersectionOfChannels =
                 intersectionOfChannels.intersect(it.channelsNamesList).toHashSet()
         }
+
+        channelListLiveData.value = intersectionOfChannels.toList()
 
         return intersectionOfChannels.toList()
     }
 
     fun resetFilters() {
-        specificsListForFilteringOffers.clear()
-        specificsListForFilteringOffersLiveData.value = specificsListForFilteringOffers
-        filteredMarketingOfferListLiveData.value = ArrayList()
+        specificsListForFilteringCampaigns.clear()
+        specificsListForFilteringCampaignsLiveData.value = specificsListForFilteringCampaigns
+        filteredMarketingCampaignListLiveData.value = ArrayList()
     }
+
+    fun goToSelectChannel() {
+        viewState.value = MainActivityViewState.SelectChannel
+    }
+
+    fun goToReviewSelectedCampaign(marketingCampaign: MarketingCampaign) {
+        viewState.value = MainActivityViewState.ReviewSelectedMarketingCampaign
+        selectedMarketingCampaign = marketingCampaign
+    }
+
 
 }

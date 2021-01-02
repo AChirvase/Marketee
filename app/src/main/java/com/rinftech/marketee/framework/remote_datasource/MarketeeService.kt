@@ -1,6 +1,6 @@
 package com.rinftech.marketee.framework.remote_datasource
 
-import com.rinftech.marketee.framework.local_datasource.MarketingOfferEntity
+import com.rinftech.marketee.framework.local_datasource.MarketingCampaignEntity
 import com.rinftech.marketee.framework.local_datasource.SpecificEntity
 import retrofit2.Call
 import retrofit2.Callback
@@ -12,6 +12,6 @@ interface MarketeeService {
     @GET("/b/O193")
     suspend fun getSpecificsList(): List<SpecificEntity>
 
-    @GET("/b/CXGM")
-    suspend fun getMarketingOffersList(): Response<List<MarketingOfferEntity>>
+    @GET("/b/QSSO")
+    suspend fun getMarketingCampaignsList(): Response<List<MarketingCampaignEntity>>
 }

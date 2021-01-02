@@ -1,14 +1,14 @@
 package com.rinftech.marketee.framework.local_datasource
 
 import androidx.lifecycle.LiveData
-import com.rinftech.marketee.domain.MarketingOffer
+import com.rinftech.marketee.domain.MarketingCampaign
 import com.rinftech.marketee.domain.Specific
 
 interface LocalDataSource {
     suspend fun updateSpecificsList(specificsList: List<Specific>)
-    suspend fun updateMarketingOffersList(marketingOfferEntityList: List<MarketingOfferEntity>)
+    suspend fun updateMarketingCampaignsList(marketingCampaignEntityList: List<MarketingCampaignEntity>)
     fun getSpecificsListLiveData(): LiveData<List<Specific>>
-    fun getMarketingOffersListLiveData(): LiveData<List<MarketingOffer>>
+    fun getMarketingCampaignsListLiveData(): LiveData<List<MarketingCampaign>>
 }
 
 class LocalDataSourceImpl(private val marketeeDao: MarketeeDao) :
@@ -16,13 +16,13 @@ class LocalDataSourceImpl(private val marketeeDao: MarketeeDao) :
     override suspend fun updateSpecificsList(specificsList: List<Specific>) =
         marketeeDao.updateSpecificsList(Mapper.toEntity(specificsList))
 
-    override suspend fun updateMarketingOffersList(marketingOfferEntityList: List<MarketingOfferEntity>) =
-        marketeeDao.updateMarketingOffer(marketingOfferEntityList)
+    override suspend fun updateMarketingCampaignsList(marketingCampaignEntityList: List<MarketingCampaignEntity>) =
+        marketeeDao.updateMarketingCampaign(marketingCampaignEntityList)
 
     override fun getSpecificsListLiveData() =
         Mapper.toDomainLiveDataSpecificsList(marketeeDao.getSpecificsListLiveData())
 
-    override fun getMarketingOffersListLiveData(): LiveData<List<MarketingOffer>> =
-        Mapper.toDomainLiveDataMarketingOffersList(marketeeDao.getMarketingOffersListLiveData())
+    override fun getMarketingCampaignsListLiveData(): LiveData<List<MarketingCampaign>> =
+        Mapper.toDomainLiveDataMarketingCampaignsList(marketeeDao.getMarketingCampaignsListLiveData())
 
 }

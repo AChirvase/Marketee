@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
-import com.rinftech.marketee.domain.MarketingOffer
+import com.rinftech.marketee.domain.MarketingCampaign
 
 @Dao
 @JvmSuppressWildcards
@@ -18,11 +18,11 @@ interface MarketeeDao {
     fun getSpecificsListLiveData(): LiveData<List<SpecificEntity>>
 
     @Insert(onConflict = REPLACE)
-    suspend fun updateMarketingOffer(marketingOfferEntityList: List<MarketingOfferEntity>)
+    suspend fun updateMarketingCampaign(marketingCampaignEntityList: List<MarketingCampaignEntity>)
 
-    @Query("SELECT * FROM marketing_offer_table")
-    fun getMarketingOffersListLiveData(): LiveData<List<MarketingOfferEntity>>
+    @Query("SELECT * FROM marketing_campaign_table")
+    fun getMarketingCampaignsListLiveData(): LiveData<List<MarketingCampaignEntity>>
 
-    @Query("SELECT * FROM marketing_offer_table WHERE channelName LIKE :channelName ")
-    fun getMarketingOffersByChannelLiveData(channelName: String): LiveData<List<MarketingOfferEntity>>
+    @Query("SELECT * FROM marketing_campaign_table WHERE channelName LIKE :channelName ")
+    fun getMarketingCampaignsByChannelLiveData(channelName: String): LiveData<List<MarketingCampaignEntity>>
 }

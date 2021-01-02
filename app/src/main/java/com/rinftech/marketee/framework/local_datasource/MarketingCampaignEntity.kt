@@ -4,10 +4,10 @@ import androidx.room.Entity
 import androidx.room.TypeConverters
 import com.rinftech.marketee.utils.StringListToGsonConverter
 
-@Entity(tableName = "marketing_offer_table", primaryKeys = ["channelName", "offerName"])
-data class MarketingOfferEntity(
+@Entity(tableName = "marketing_campaign_table", primaryKeys = ["channelName", "campaignName"])
+data class MarketingCampaignEntity(
     var channelName: String,
-    var offerName: String,
+    var campaignName: String,
     var price: String,
     @TypeConverters(StringListToGsonConverter::class)
     var features: ArrayList<String>
