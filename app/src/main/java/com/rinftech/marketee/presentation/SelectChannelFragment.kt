@@ -10,9 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rinftech.marketee.R
-import kotlinx.android.synthetic.main.select_channel_fragment.*
 import kotlinx.android.synthetic.main.select_targeting_specifics_fragment.*
-import kotlinx.android.synthetic.main.select_targeting_specifics_fragment.specificsRecyclerView
 import kotlinx.android.synthetic.main.targeting_specific_item.view.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import org.koin.core.KoinComponent
@@ -35,7 +33,11 @@ class SelectChannelFragment : Fragment(), KoinComponent {
     private fun setupAdapter() {
         val selectChannelAdapter = SelectChannelRecyclerAdapter()
         viewModel.channelListLiveData.observe(viewLifecycleOwner, Observer<List<String>> {
-            selectChannelAdapter.channelList = it as ArrayList<String>
+            if (it.size == 1) {
+                selectChannelAdapter.channelList = arrayListOf(it[0])
+            } else {
+                selectChannelAdapter.channelList = it as ArrayList<String>
+            }
         })
         selectChannelAdapter.onItemClick = { channelName ->
             viewModel.goToSelectMarketingCampaign(channelName)
@@ -65,7 +67,7 @@ class SelectChannelFragment : Fragment(), KoinComponent {
         override fun getItemCount() = channelList.size
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            var textView: TextView = view.targetingSpecificItemTv
+            var textView: TextView = view.targetingSpecificNameTv
 
             init {
                 view.setOnClickListener {

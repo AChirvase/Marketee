@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Marketee</string>
+    <string name="select_targeting_specifics_title">Step 1</string>
+    <string name="select_channel_title">Step 2</string>
+    <string name="select_marketing_campaign_title">Step 3</string>
+    <string name="select_targeting_specifics_subtitle">Please select one or more specifics</string>
+    <string name="select_channel_subtitle">Please select a channel</string>
+    <string name="select_marketing_campaign_subtitle">Please select a marketing campaign</string>
+    <string name="euro_symbol">€</string>
+    <string name="per_company_per_campaign">/campaign</string>
+    <string name="email_subject">Buy %s marketing campaign</string>
+    <string name="email_text">Hello,\n\n
+            I\'d like to purchase your campaign with the following details:\n\n
+        Name: %s\n
+        Channel: %s\n
+        Price: %s\n
+        Perks: \n
+        %s
+        \n\nKind regards,\nJohn</string>
 </resources>

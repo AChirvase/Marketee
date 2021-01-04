@@ -1,10 +1,12 @@
 package com.rinftech.marketee.presentation
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -30,9 +32,6 @@ class SelectTargetingSpecificsFragment : Fragment(), KoinComponent {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupAdapter()
-        goToSelectChannel.setOnClickListener {
-            viewModel.goToSelectChannel()
-        }
     }
 
     private fun setupAdapter() {
@@ -73,18 +72,19 @@ class SelectTargetingSpecificsFragment : Fragment(), KoinComponent {
         }
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-            viewHolder.textView.text = specificsList[position].specificName
+            viewHolder.targetingSpecificName.text = specificsList[position].specificName
             if (specificsListForFilteringCampaigns.contains(specificsList[position])) {
-                viewHolder.textView.setBackgroundColor(Color.parseColor("#567845"))
+                viewHolder.targetingSpecificCheckImg.visibility = VISIBLE
             } else {
-                viewHolder.textView.setBackgroundColor(Color.parseColor("#992031"))
+                viewHolder.targetingSpecificCheckImg.visibility = INVISIBLE
             }
         }
 
         override fun getItemCount() = specificsList.size
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            var textView: TextView = view.targetingSpecificItemTv
+            var targetingSpecificName: TextView = view.targetingSpecificNameTv
+            var targetingSpecificCheckImg: ImageView = view.targetingSpecificCheckImg
 
             init {
                 view.setOnClickListener {
