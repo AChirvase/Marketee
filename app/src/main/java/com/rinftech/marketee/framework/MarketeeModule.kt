@@ -1,10 +1,10 @@
 package com.rinftech.marketee.framework
 
-import com.rinftech.marketee.framework.remote_datasource.MarketeeService
 import com.rinftech.marketee.data.Repository
 import com.rinftech.marketee.framework.local_datasource.LocalDataSource
 import com.rinftech.marketee.framework.local_datasource.LocalDataSourceImpl
 import com.rinftech.marketee.framework.local_datasource.MarketeeRoomDataBase
+import com.rinftech.marketee.framework.remote_datasource.MarketeeService
 import com.rinftech.marketee.framework.remote_datasource.NetworkResponseHandler
 import com.rinftech.marketee.framework.remote_datasource.RemoteDataSource
 import com.rinftech.marketee.framework.remote_datasource.RemoteDataSourceImpl
@@ -65,13 +65,6 @@ private fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkH
         .newBuilder()
             //logging http calls and errors
         .addInterceptor(loggingInterceptor)
-            //authentication
-//        .addInterceptor { chain ->
-//            val newRequest = chain.request().newBuilder()
-//                .addHeader("secret-key", API_KEY)
-//                .build()
-//            chain.proceed(newRequest)
-//        }
         .build()
 
 private fun provideMarketeeService(retrofit: Retrofit): MarketeeService =

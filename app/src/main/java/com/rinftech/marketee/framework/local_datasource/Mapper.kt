@@ -8,9 +8,6 @@ import com.rinftech.marketee.domain.Specific
 class Mapper {
     companion object {
 
-        fun toDomain(specificEntity: SpecificEntity) =
-            Specific(specificEntity.specificName, specificEntity.channels)
-
         fun toDomainLiveDataSpecificsList(specificEntityList: LiveData<List<SpecificEntity>>): LiveData<List<Specific>> {
             return Transformations.map(specificEntityList) {
                 it.map { entity ->
