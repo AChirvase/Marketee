@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.rinftech.marketee.R
+import com.rinftech.marketee.presentation.fragments.SelectChannelFragment
+import com.rinftech.marketee.presentation.fragments.SelectMarketingCampaignFragment
+import com.rinftech.marketee.presentation.fragments.SelectTargetingSpecificsFragment
 import kotlinx.android.synthetic.main.main_activity_layout.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.KoinComponent

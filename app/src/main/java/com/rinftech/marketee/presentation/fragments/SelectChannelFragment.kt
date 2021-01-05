@@ -1,4 +1,4 @@
-package com.rinftech.marketee.presentation
+package com.rinftech.marketee.presentation.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rinftech.marketee.R
+import com.rinftech.marketee.presentation.MainActivityViewModel
 import kotlinx.android.synthetic.main.select_targeting_specifics_fragment.*
 import kotlinx.android.synthetic.main.targeting_specific_item.view.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel

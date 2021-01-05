@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rinftech.marketee.R
@@ -46,7 +47,7 @@ class MainActivityViewModel(
         }
     }
 
-    val allMarketingCampaignList: MutableLiveData<List<MarketingCampaign>> by lazy {
+    private val allMarketingCampaignList: MutableLiveData<List<MarketingCampaign>> by lazy {
         MutableLiveData<List<MarketingCampaign>>().also {
             loadMarketingCampaignsList()
         }
@@ -154,11 +155,36 @@ class MainActivityViewModel(
 
     fun onMainActivityFabPressed() {
         when (viewState.value) {
-            is MainActivityViewState.TargetingSpecificsSelected -> goToSelectChannel()
+            is MainActivityViewState.SelectTargetingSpecifics -> {
+                if (specificsListForFilteringCampaigns.isNullOrEmpty()) {
+                    showErrorToast(R.string.no_specifics_selected)
+                }
+            }
+            is MainActivityViewState.TargetingSpecificsSelected -> {
+                if (channelListLiveData.value?.isNullOrEmpty() == true) {
+                    showErrorToast(R.string.no_channels_that_match)
+                } else {
+                    goToSelectChannel()
+                }
+            }
+            is MainActivityViewState.SelectChannel -> {
+                showErrorToast(R.string.no_channel_selected)
+            }
+            is MainActivityViewState.SelectMarketingCampaign -> {
+                showErrorToast(R.string.no_marketing_campaign_selected)
+            }
             is MainActivityViewState.ReviewSelectedMarketingCampaign -> buyMarketingCampaign()
             else -> {
             }
         }
+    }
+
+    private fun showErrorToast(stringResId: Int) {
+        Toast.makeText(
+            context,
+            context.resources.getString(stringResId),
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     private fun buyMarketingCampaign() {

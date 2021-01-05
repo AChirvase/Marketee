@@ -1,4 +1,4 @@
-package com.rinftech.marketee.presentation
+package com.rinftech.marketee.presentation.fragments
 
 import android.graphics.Color
 import android.os.Bundle
@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rinftech.marketee.R
 import com.rinftech.marketee.domain.MarketingCampaign
+import com.rinftech.marketee.presentation.MainActivityViewModel
+import com.rinftech.marketee.presentation.MainActivityViewState
 import kotlinx.android.synthetic.main.select_marketing_offer.*
 import kotlinx.android.synthetic.main.targeting_specific_item.view.*
 import me.saket.inboxrecyclerview.animation.ItemExpandAnimator
