@@ -21,12 +21,15 @@ All screens design, screen transitions, listing type are up to your imagination.
 The Marketee app is based on a **Domain Driven Architecture** (having 4 layers - Domain, Data, Framework and Presentation) with respect to **SOLID** principles. The Presentation layer, containing the ViewModel, MainActivity and Fragments, was implemented with the **MVI** pattern. The main components were injected using **Koin DI**. 
 The Architecture and the dependency tree is depicted below:
 
+<pre>
+
 **Presentation**            ->  |   **Data**   ->    |  **Domain**              | <-  **Framework**                 |
 
 Fragments  ------> ViewModel -----> Repository ------>  Model/Business Classes  <----- Local DataSource
                      ^                                           ^                                        
 Activity   ----------|                                           |-------------------- Remote DataSource 
 
+</pre>
 
                                                                                                           
                                       
