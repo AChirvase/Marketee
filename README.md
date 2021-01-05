@@ -4,7 +4,6 @@
 
 ## What was aked for?
 
-Please find attached a list of marketing channels with targeting specifics and several marketing  campaign fees for each of them.  
 Our client needs an MVP application which will have the following functionalities (flows/steps):  
 1. Listing of the targeting specifics where he is allowed to multiple choose
 2. Listing of the channels which offer his selected specifics. He can select any channel  
@@ -17,19 +16,35 @@ All screens design, screen transitions, listing type are up to your imagination.
 
 ## How was it implemented?
 
-###Architecture
+### Architecture
 The Marketee app is based on a **Domain Driven Architecture** (having 4 layers - Domain, Data, Framework and Presentation) with respect to **SOLID** principles. The Presentation layer, containing the ViewModel, MainActivity and Fragments, was implemented with the **MVI** pattern. The main components were injected using **Koin DI**. 
 The Architecture and the dependency tree is depicted below:
 
 <pre>
 
-**Presentation**            ->  |   **Data**   ->    |  **Domain**              | <-  **Framework**                 |
+**Presentation**            ->  |   **Data**   ->    |  **Domain**              | <-  **Framework**     
 
 Fragments  ------> ViewModel -----> Repository ------>  Model/Business Classes  <----- Local DataSource
-                     ^                                           ^                                        
+    ^                ^                                           ^                                        
 Activity   ----------|                                           |-------------------- Remote DataSource 
 
 </pre>
+
+
+### Database
+RemoteDataSource was implemented with Retrofit and it fetches the data from a free JSON hosting platform. LocalDataSource was implemented using Room. This allows a LiveData flow between Framework Layer and Presentation Layer. For the LocalDataSource, the Framework layer has it's own model classes (@Entities for Room Db)to preserve the Dependency Inversion principle (so we don't transform the business logic classes in the Domain layer into @Entities).
+
+### Repository
+Depends on abstractions of Remote and Local DataSources.
+
+### ViewModel
+The ViewModel is injected and shared between Fragments and Activity. It holds multiple MutableLiveData fields that aid the communication between Fragments and Activity. It handles all the decisional logic so Activity and Fragments handle only the actual data display.
+
+### Activity
+The Activity can have multiple states as described by the MVI pattern. Based on this states it displays specific Fragments and updates it's layout fields. For logic inside onBackPressed() or onMainActivityFabPressed() it calls the viewModel.
+
+
+
 
                                                                                                           
                                       
