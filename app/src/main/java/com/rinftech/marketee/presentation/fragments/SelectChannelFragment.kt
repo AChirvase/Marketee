@@ -34,10 +34,16 @@ class SelectChannelFragment : Fragment(), KoinComponent {
     private fun setupAdapter() {
         val selectChannelAdapter = SelectChannelRecyclerAdapter()
         viewModel.channelListLiveData.observe(viewLifecycleOwner, Observer<List<String>> {
-            if (it.size == 1) {
-                selectChannelAdapter.channelList = arrayListOf(it[0])
-            } else {
-                selectChannelAdapter.channelList = it as ArrayList<String>
+            when {
+                it.isNullOrEmpty() -> {
+                    selectChannelAdapter.channelList = arrayListOf()
+                }
+                it.size == 1 -> {
+                    selectChannelAdapter.channelList = arrayListOf(it[0])
+                }
+                else -> {
+                    selectChannelAdapter.channelList = it as ArrayList<String>
+                }
             }
         })
         selectChannelAdapter.onItemClick = { channelName ->

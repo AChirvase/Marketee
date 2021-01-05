@@ -1,5 +1,6 @@
 package com.rinftech.marketee.presentation.fragments
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
@@ -15,8 +16,8 @@ import com.rinftech.marketee.R
 import com.rinftech.marketee.domain.MarketingCampaign
 import com.rinftech.marketee.presentation.MainActivityViewModel
 import com.rinftech.marketee.presentation.MainActivityViewState
+import kotlinx.android.synthetic.main.marketing_campaign_item.view.*
 import kotlinx.android.synthetic.main.select_marketing_offer.*
-import kotlinx.android.synthetic.main.targeting_specific_item.view.*
 import me.saket.inboxrecyclerview.animation.ItemExpandAnimator
 import me.saket.inboxrecyclerview.dimming.DimPainter
 import me.saket.inboxrecyclerview.page.PullToCollapseListener
@@ -57,7 +58,8 @@ class SelectMarketingCampaignFragment : Fragment(), KoinComponent {
     }
 
     private fun setupAdapter() {
-        val selectMarketingCampaignAdapter = SelectMarketingCampaignRecyclerAdapter()
+        val selectMarketingCampaignAdapter =
+            SelectMarketingCampaignRecyclerAdapter(requireContext())
 
         viewModel.filteredMarketingCampaignListLiveData.observe(
             viewLifecycleOwner,
@@ -108,8 +110,8 @@ class SelectMarketingCampaignFragment : Fragment(), KoinComponent {
 
     }
 
-    class SelectMarketingCampaignRecyclerAdapter
-        : RecyclerView.Adapter<SelectMarketingCampaignRecyclerAdapter.ViewHolder>() {
+    class SelectMarketingCampaignRecyclerAdapter(val context: Context) :
+        RecyclerView.Adapter<SelectMarketingCampaignRecyclerAdapter.ViewHolder>() {
 
         var marketingCampaignList = ArrayList<MarketingCampaign>()
 
@@ -122,12 +124,18 @@ class SelectMarketingCampaignFragment : Fragment(), KoinComponent {
 
         override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.targeting_specific_item, viewGroup, false)
+                .inflate(R.layout.marketing_campaign_item, viewGroup, false)
             return ViewHolder(view)
         }
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-            viewHolder.textView.text = marketingCampaignList[position].campaignName
+            viewHolder.marketingCampaignName.text = marketingCampaignList[position].campaignName
+            viewHolder.channelName.text = marketingCampaignList[position].channelName
+            viewHolder.price.text = marketingCampaignList[position].price
+            viewHolder.numberOfFeatures.text = context.getString(
+                R.string.number_of_features,
+                marketingCampaignList[position].features.size
+            )
         }
 
         override fun getItemCount() = marketingCampaignList.size
@@ -136,7 +144,10 @@ class SelectMarketingCampaignFragment : Fragment(), KoinComponent {
             marketingCampaignList[position].hashCode().toLong()
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            var textView: TextView = view.targetingSpecificNameTv
+            var marketingCampaignName: TextView = view.marketingCampaignNameTv
+            var channelName: TextView = view.channelNameTv
+            var price: TextView = view.priceTv
+            var numberOfFeatures: TextView = view.numberOfFeaturesTv
 
             init {
                 view.setOnClickListener {

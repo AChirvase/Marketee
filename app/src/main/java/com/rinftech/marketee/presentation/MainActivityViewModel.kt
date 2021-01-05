@@ -168,7 +168,7 @@ class MainActivityViewModel(
                 }
             }
             is MainActivityViewState.SelectChannel -> {
-                showErrorToast(R.string.no_channel_selected)
+                onBackPressed()
             }
             is MainActivityViewState.SelectMarketingCampaign -> {
                 showErrorToast(R.string.no_marketing_campaign_selected)
@@ -237,8 +237,8 @@ class MainActivityViewModel(
                 resetFilters()
             }
             is MainActivityViewState.SelectChannel -> {
-                resetFilters()
                 viewState.value = MainActivityViewState.SelectTargetingSpecifics
+                resetFilters()
             }
             is MainActivityViewState.SelectMarketingCampaign -> {
                 viewState.value = MainActivityViewState.SelectChannel

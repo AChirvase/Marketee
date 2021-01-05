@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity(), KoinComponent {
             }
             is MainActivityViewState.SelectChannel -> {
                 setSelectChannelFragment()
-                updateFab(R.drawable.ic_m_letter_white_24dp)
+                updateFab(R.drawable.ic_baseline_arrow_back_24)
                 mainActivityTitle.text = getString(R.string.select_channel_title)
                 mainActivitySubtitle.text = getString(R.string.select_channel_subtitle)
             }

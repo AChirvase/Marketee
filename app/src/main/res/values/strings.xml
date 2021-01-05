@@ -11,6 +11,7 @@
     <string name="no_specifics_selected">Please select at least one specific</string>
     <string name="no_channel_selected">Please select a channel</string>
     <string name="no_marketing_campaign_selected">Please select a marketing campaign</string>
+    <string name="number_of_features">%d features</string>
     <string name="per_company_per_campaign">/campaign</string>
     <string name="email_subject">Buy %s marketing campaign</string>
     <string name="email_text">Hello,\n\n
